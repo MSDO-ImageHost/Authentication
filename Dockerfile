@@ -1,4 +1,4 @@
-FROM java:15  
+FROM openjdk:16-jdk-alpine3.12  
 COPY . . 
 WORKDIR /src  
 RUN javac -cp ../amqp-client-5.7.1.jar Send.java Receive.java mySQL.java Main.java
