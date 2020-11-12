@@ -17,7 +17,7 @@ Response: ReturnAuthenticationToken
 ```json
 {
     "user-id": "<user-id>",
-    "token": "<Integer>"
+    "token": "<token>"
 }
 ```
 
@@ -27,7 +27,7 @@ Request
 ```json
 {
   "user-id": "<user-id>",
-  "token": "<Integer>"
+  "token": "<token>"
   
 }
 ```
@@ -100,7 +100,7 @@ Request: RequestAccountDelete
 ```json
 {
   "user-id": "<user-id>",
-  ("token": "<Integer>")
+  ("token": "<token>")
 }
 ```
 
@@ -137,7 +137,7 @@ Request
 ```json
 {
   "user-id": "<user-id>",
-  "token": "<Integer>"
+  "token": "<token>"
 }
 ```
 
