@@ -118,7 +118,7 @@ Response
 Request
 ```json
 {
-  "user-id": "<user-id>"
+  "user-id": "<user-id>",
   "new-privileges": "<privileges>"
 }
 ```
@@ -136,7 +136,7 @@ Response
 Request
 ```json
 {
-  "user-id": "<user-id>"
+  "user-id": "<user-id>",
   "token": "<Integer>"
 }
 ```
