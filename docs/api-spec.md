@@ -3,12 +3,13 @@
 
 
 
-## return authentication token
+## LoginToken
 
 Request
 ```json
 {
-  "user-id": "<user-id>"  
+  "user-id": "<user-id>"
+  "login-time": "<ISO8601 timestamp>"
 }
 ```
 
@@ -16,35 +17,18 @@ Response
 ```json
 {
     "user-id": "<user-id>",
-    "token": "<positive integer>"
+    "token": "<Integer>"
 }
 ```
 
-## confirm set password
+## InvalidateLoginToken
 
 Request
 ```json
 {
   "user-id": "<user-id>",
-  "old-password": "<password>",
-  "new-password": "<password>"
-}
-```
-
-Response
-```json
-{
-    "password-set": "<Boolean>"
-}
-```
-
-## confirm invalidate token
-
-Request
-```json
-{
-  "user-id": "<user-id>",
-  "token": "<positive integer>"
+  "token": "<Integer>"
+  
 }
 ```
 
@@ -55,7 +39,7 @@ Response
 }
 ```
 
-## confirm account creation
+## AccountCreate
 
 Request
 ```json
@@ -74,50 +58,86 @@ Response
 }
 ```
 
-## confirm account deletion
+## AccountReset
 
 Request
 ```json
 {
-  "user-id": "<user-id>",
-  "password": "<password>"
+  
 }
 ```
 
 Response
 ```json
 {
-    "account-deleted": "<Boolean>"
+    "account-reset": "<Boolean>",
+    ("user-id": "<user-id>")
 }
 ```
 
-## confirm account update
+## AccountPasswordUpdate
 
 Request
 ```json
 {
   "user-id": "<user-id>",
-  "old-username": "<username>",
-  "new-username": "<username>",
-  "old-email": "<email>",
-  "new-email": "<email>"
+  "old-password": "<password>",
+  "new-password": "<password>"
 }
 ```
 
 Response
 ```json
 {
-    "account-updated": "<Boolean>"
+    "password-updated": "<Boolean>",
+    ("user-id": "<user-id>"
 }
 ```
 
-## return account info
+## AccountDeletion
 
 Request
 ```json
 {
   "user-id": "<user-id>",
-  ("password": "<password>")
+  ("token": "<Integer>")
+}
+```
+
+Response
+```json
+{
+   "account-deleted": "<Boolean>",
+  ("user-id": "<user-id>")
+}
+```
+
+
+## UpdateAccountPrivileges
+
+Request
+```json
+{
+  "user-id": "<user-id>"
+  "new-privileges": "<privileges>"
+}
+```
+
+Response
+```json
+{
+    "privi-updated": "<Boolean>",
+    "user-id": "<user-id>"
+}
+```
+
+## AccountData
+
+Request
+```json
+{
+  "user-id": "<user-id>"
+  "token": "<Integer>"
 }
 ```
 
@@ -131,19 +151,19 @@ Response
 }
 ```
 
-## request likes for user
+## ReturnLikesForUser
 
 Request
 ```json
 {
-  "user-id": "<user-id>"  
+    "user-id": "<user-id>",
+    "number-of-likes": "<Integer>"
 }
 ```
 
 Response
 ```json
 {
-    "user-id": "<user-id>",
-    "number-of-likes": "<positive integer>"
+   
 }
 ```
