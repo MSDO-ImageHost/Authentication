@@ -3,7 +3,7 @@
 
 
 
-## LoginToken
+## RequestLoginToken
 
 Request
 ```json
@@ -13,7 +13,7 @@ Request
 }
 ```
 
-Response
+Response: ReturnAuthenticationToken
 ```json
 {
     "user-id": "<user-id>",
@@ -21,7 +21,7 @@ Response
 }
 ```
 
-## InvalidateLoginToken
+## RequestInvalidateLoginToken
 
 Request
 ```json
@@ -32,14 +32,14 @@ Request
 }
 ```
 
-Response
+Response: ConfirmInvalidateToken
 ```json
 {
     "token-invalid": "<Boolean>"
 }
 ```
 
-## AccountCreate
+## RequestAccountCreate
 
 Request
 ```json
@@ -50,7 +50,7 @@ Request
 }
 ```
 
-Response
+Response: ConfirmAccountCreation
 ```json
 {
     "account-created": "<Boolean>",
@@ -58,7 +58,7 @@ Response
 }
 ```
 
-## AccountReset
+## RequestAccountReset
 
 Request
 ```json
@@ -67,7 +67,7 @@ Request
 }
 ```
 
-Response
+Response: 
 ```json
 {
     "account-reset": "<Boolean>",
@@ -75,7 +75,7 @@ Response
 }
 ```
 
-## AccountPasswordUpdate
+## RequestAccountPasswordUpdate
 
 Request
 ```json
@@ -86,7 +86,7 @@ Request
 }
 ```
 
-Response
+Response: ConfirmInvalidateToken
 ```json
 {
     "password-updated": "<Boolean>",
@@ -94,9 +94,9 @@ Response
 }
 ```
 
-## AccountDeletion
+## ConfirmAccountDeletion
 
-Request
+Request: RequestAccountDelete
 ```json
 {
   "user-id": "<user-id>",
@@ -123,7 +123,7 @@ Request
 }
 ```
 
-Response
+Response: ConfirmAccountUpdate
 ```json
 {
     "privi-updated": "<Boolean>",
@@ -131,7 +131,7 @@ Response
 }
 ```
 
-## AccountData
+## RequestAccountData
 
 Request
 ```json
@@ -141,7 +141,7 @@ Request
 }
 ```
 
-Response
+Response: ReturnAccountInfo
 ```json
 {
     "user-id": "<user-id>",
@@ -153,7 +153,7 @@ Response
 
 ## ReturnLikesForUser
 
-Request
+Request: RequestLikesForUser
 ```json
 {
     "user-id": "<user-id>",
