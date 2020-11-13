@@ -16,8 +16,11 @@ Request
 Response: ReturnAuthenticationToken
 ```json
 {
-    "user-id": "<user-id>",
-    "token": "<token>"
+    "data": "<jwt>",
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
@@ -26,8 +29,7 @@ Response: ReturnAuthenticationToken
 Request
 ```json
 {
-  "user-id": "<user-id>",
-  "token": "<token>"
+  "authentication_token": "<jwt>"
   
 }
 ```
@@ -35,7 +37,12 @@ Request
 Response: ConfirmInvalidateToken
 ```json
 {
-    "token-invalid": "<Boolean>"
+    "invalidated_at": "<ISO8601 timestamp>",
+    "data": "<Object: requested data>",
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
@@ -53,8 +60,14 @@ Request
 Response: ConfirmAccountCreation
 ```json
 {
-    "account-created": "<Boolean>",
-    ("user-id": "<user-id>")
+    "data": {
+        "user-id": "<user-id>",
+        "created_at": "<ISO8601 timestamp>"
+        },
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
@@ -63,34 +76,44 @@ Response: ConfirmAccountCreation
 Request
 ```json
 {
-  
+  "authentication_token": "<jwt>", 
 }
 ```
 
-Response: 
+Response: ConfirmAccountReset 
 ```json
 {
-    "account-reset": "<Boolean>",
-    ("user-id": "<user-id>")
+    "data": {
+        "reset_code": "<Integer/String>",
+        "default-password": "<password>"
+        },
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
+Then the user should write the code sent to its email and that code is compared with the code from ConfirmAccountReset. It they are equal a RequestAccountPasswordUpdate is sent with the default as the old password and the new password is the one the user had written.  
 
 ## RequestAccountPasswordUpdate
 
 Request
 ```json
 {
-  "user-id": "<user-id>",
+  "authentication_token": "<jwt>",
   "old-password": "<password>",
   "new-password": "<password>"
 }
 ```
 
-Response: ConfirmInvalidateToken
+Response: ConfirmSetPassword
 ```json
 {
-    "password-updated": "<Boolean>",
-    ("user-id": "<user-id>"
+    "data": "<Object: requested data>",
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
@@ -99,16 +122,18 @@ Response: ConfirmInvalidateToken
 Request: RequestAccountDelete
 ```json
 {
-  "user-id": "<user-id>",
-  ("token": "<token>")
+  "authentication_token": "<jwt>"
 }
 ```
 
 Response
 ```json
 {
-   "account-deleted": "<Boolean>",
-  ("user-id": "<user-id>")
+   "data": "<Object: requested data>",
+   "status_code": "<Number: HTTP status code",
+   "message": "<String>",
+   "processing_time": "<Number: Processing time of the request in ms>",
+   "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
@@ -118,16 +143,19 @@ Response
 Request
 ```json
 {
-  "user-id": "<user-id>",
-  "new-privileges": "<privileges>"
+  "authentication_token": "<jwt>",
+  "new-privileges": ["<privileges>"]
 }
 ```
 
 Response: ConfirmAccountUpdate
 ```json
 {
-    "privi-updated": "<Boolean>",
-    "user-id": "<user-id>"
+    "data": "<Object: requested data>",
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
@@ -136,34 +164,24 @@ Response: ConfirmAccountUpdate
 Request
 ```json
 {
-  "user-id": "<user-id>",
-  "token": "<token>"
+  "authentication_token": "<jwt>"
 }
 ```
 
 Response: ReturnAccountInfo
 ```json
 {
-    "user-id": "<user-id>",
-    "username": "<username>",
-    "user-email": "<email>",
-    "last-login": "<time-format>"
-}
-```
-
-## ReturnLikesForUser
-
-Request: RequestLikesForUser
-```json
-{
-    "user-id": "<user-id>",
-    "number-of-likes": "<Integer>"
-}
-```
-
-Response
-```json
-{
-   
+    "data": {
+        "name": "<string>", 
+        "username": "<username>", 
+        "user-email": "<email>", 
+        "last-login": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601 timestamp>",
+        "updated_at": "<ISO8601 timestamp>"
+        },
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
