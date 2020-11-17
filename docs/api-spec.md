@@ -8,7 +8,8 @@
 Request
 ```json
 {
-  "user-id": "<user-id>",
+  "user-name": "<username>",
+  "password": "<password>",
   "login-time": "<ISO8601 timestamp>"
 }
 ```
