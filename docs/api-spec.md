@@ -173,9 +173,9 @@ Response: ReturnAccountInfo
 ```json
 {
     "data": {
-        "name": "<string>", 
         "username": "<username>", 
         "user-email": "<email>", 
+        "role": "<role>",
         "last-login": "<ISO8601 timestamp>",
         "created_at": "<ISO8601 timestamp>",
         "updated_at": "<ISO8601 timestamp>"
