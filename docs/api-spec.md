@@ -53,7 +53,8 @@ Request
 {
   "username": "<username>",
   "user-email": "<email>",
-  "password": "<password>"
+  "password": "<password>",
+  "role": "<role>"
 }
 ```
 
@@ -144,7 +145,7 @@ Request
 ```json
 {
   "authentication_token": "<jwt>",
-  "new-privileges": ["<privileges>"]
+  "new-role": "<role>"
 }
 ```
 
@@ -158,6 +159,30 @@ Response: ConfirmAccountUpdate
     "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
+
+## UpdateAccount
+
+Request
+```json
+{
+  "authentication_token": "<jwt>",
+  "username": "<username>",
+  "user-email": "<email>"
+  
+}
+```
+
+Response: ConfirmAccountUpdate
+```json
+{
+    "data": "<Object: requested data>",
+    "status_code": "<Number: HTTP status code",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
+}
+```
+If one of the two options should not be changed the JSON request should contain the old info on that key e.g. if the username should not be changed the old username is sent in the JSON. 
 
 ## RequestAccountData
 
