@@ -10,7 +10,7 @@ Request
 {
   "username": "<username>",
   "password": "<password>",
-  "login-time": "<ISO8601 timestamp>"
+  "role": "role"
 }
 ```
 
