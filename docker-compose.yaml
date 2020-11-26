@@ -1,0 +1,57 @@
+version: '3'
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
+
+
+volumes:
+  rabbitmq_data:
+    driver: local
+
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    volumes:
+      - rabbitmq_data:/bitnami
+    ports:
+      - 15672:15672 # maybe this can be deleted
+    networks:
+      - private
+    environment:
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+    restart: unless-stopped
+    
+  db:
+     image: mysql:5.7
+     command: --init-file /data/application/init.sql
+     volumes:
+       - db_data:/var/lib/mysql
+       - ./init.sql:/data/application/init.sql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: 1234
+       MYSQL_DATABASE: authentication
+
+
+  authentication:
+    build: .
+    container_name: authentication
+    depends_on:
+      - rabbitmq
+    networks:
+      - public
+      - private
+    ports:
+      - 8080:80
+      - 3000:3000
+    environment:
+      - AMQP_USER=${RABBITMQ_USERNAME}
+      - AMQP_PASS=${RABBITMQ_PASSWORD}
+      - AMQP_URI=amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672
+    restart: unless-stopped
