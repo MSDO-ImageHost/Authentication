@@ -12,7 +12,7 @@ public class rabbitMQ {
         // TODO: Figure out how AMQP link is given securely
         String uri = null;
         if (uri == null) {
-            uri = "amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672";
+            uri = System.getenv("AMQP_URI");
         }
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(uri);
