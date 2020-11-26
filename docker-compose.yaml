@@ -9,7 +9,7 @@ networks:
 
 volumes:
   rabbitmq_data:
-    driver: local
+  db_data:
 
 
 services:
