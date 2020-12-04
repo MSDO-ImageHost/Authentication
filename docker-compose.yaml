@@ -3,55 +3,59 @@ version: '3'
 networks:
   public:
     driver: bridge
-  private:
-    driver: bridge
-
 
 volumes:
   rabbitmq_data:
-  db_data:
+  mysql_data:
 
 
 services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    networks:
+      - public
     volumes:
       - rabbitmq_data:/bitnami
     ports:
       - 15672:15672 # maybe this can be deleted
-    networks:
-      - private
     environment:
-      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     restart: unless-stopped
     
-  db:
-     image: mysql:5.7
+  mysql:
+     image: mysql:8
+     networks:
+       - public
+     container_name: mysql
      command: --init-file /data/application/init.sql
      volumes:
-       - db_data:/var/lib/mysql
+       - mysql_data:/var/lib/mysql
        - ./init.sql:/data/application/init.sql
      restart: always
      environment:
-       MYSQL_ROOT_PASSWORD: 1234
-       MYSQL_DATABASE: authentication
+       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+       - MYSQL_DATABASE=${MYSQL_DATABASE}
+     ports:
+       - 3306:3306
 
 
   authentication:
     build: .
     container_name: authentication
-    depends_on:
-      - rabbitmq
     networks:
       - public
-      - private
+    depends_on:
+      - rabbitmq
+      - mysql
     ports:
       - 8080:80
       - 3000:3000
+    env_file: .env
     environment:
-      - AMQP_USER=${RABBITMQ_USERNAME}
-      - AMQP_PASS=${RABBITMQ_PASSWORD}
-      - AMQP_URI=amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672
+      - AMQP_USER=${RABBITMQ_DEFAULT_USER}
+      - AMQP_PASS=${RABBITMQ_DEFAULT_PASS}
+      - AMQP_URI=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
     restart: unless-stopped
