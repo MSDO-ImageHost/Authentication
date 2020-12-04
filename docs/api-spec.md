@@ -218,7 +218,7 @@ Request
 ```json
 {
   "authentication_token": "<jwt>",
-  "user_id"= "<userid>"
+  "user_id": "<userid>"
 }
 ```
 
@@ -238,7 +238,7 @@ Request
 ```json
 {
   "authentication_token": "<jwt>",
-  "user_id"= "<userid>"
+  "user_id": "<userid>"
 }
 ```
 
