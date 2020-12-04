@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 public class rabbitMQ {
     private static final String rapid = "rapid";
     private static Map<String, DeliverCallback> events = new HashMap<>();
-
+    
     public static Channel setupChannel() throws TimeoutException, IOException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         String uri = System.getenv("AMQP_URI");
         ConnectionFactory factory = new ConnectionFactory();
