@@ -222,57 +222,6 @@ public class Main {
         } catch (IOException | TimeoutException | URISyntaxException | KeyManagementException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        /*try {
-            JSONObject req = new JSONObject();
-            req.put("username", "Jeppe");
-            req.put("user-email", "Jeppe@");
-            req.put("password", "12345");
-            req.put("role", "admin");
-            System.out.println("Send: RequestAccountCreate");
-            rabbitMQ.send("RequestAccountCreate",req.toJSONString());
-        } catch (IOException | TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException e) {
-            e.printStackTrace();
-        }*/
-        try {
-            JSONObject req = new JSONObject();
-            req.put("username", "Jeppe");
-            req.put("password", "12345");
-            System.out.println("Send: RequestLoginToken");
-            rabbitMQ.send("RequestLoginToken",req.toJSONString());
-        } catch (IOException | TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        rabbitMQ.addSubscription("ReturnAuthenticationToken","Gateway",(consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(),"UTF-8");
-            System.out.println(message);
-            /*JSONParser parser = new JSONParser();
-            try {
-                JSONObject json = (JSONObject) parser.parse(message);
-                JWT = (String) json.get("data");
-                JSONObject body = new JSONObject();
-                String jwt ="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1Iiwicm9sZSI6ImFkbWluIiwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsImV4cCI6MTYzODU1NDMzNSwiaWF0IjoxNjA3MDE4MzM1fQ.zjBYhUKcGvWtZ-eTwVkOe-7vB9Fz0sb_Iqin290mhzw";
-                body.put("authentication_token", jwt);
-                body.put("user_id", "2");
-                System.out.println("SEND CONFIRMFLAG JEPPE");
-                rabbitMQ.send("RequestBanUser", body.toJSONString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-        });
-        /*rabbitMQ.addSubscription("ConfirmBanUser","Gateway",(consumerTag, delivery) -> {
-            try {
-                JSONObject req = new JSONObject();
-                req.put("username", "Jeppe");
-                req.put("password", "12345");
-                System.out.println("Send: RequestLoginToken");
-                rabbitMQ.send("RequestLoginToken",req.toJSONString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });*/
-        rabbitMQ.setupReceiver("Gateway");
-
-
     }
 
     public static void ping(String url){
