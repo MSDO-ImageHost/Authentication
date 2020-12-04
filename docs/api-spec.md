@@ -10,6 +10,7 @@ Request
 {
   "username": "<username>",
   "password": "<password>",
+  "ttl": "<time-in-millis>"
 }
 ```
 
@@ -123,7 +124,8 @@ Response: ConfirmSetPassword
 Request: RequestAccountDelete
 ```json
 {
-  "authentication_token": "<jwt>"
+  "authentication_token": "<jwt>",
+  "user_id": "<userid>"
 }
 ```
 
@@ -210,3 +212,44 @@ Response: ReturnAccountInfo
     "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
+
+## RequestBanUser
+Request
+```json
+{
+  "authentication_token": "<jwt>",
+  "user_id"= "<userid>"
+}
+```
+
+Response: ConfirmBanUser
+```json
+{
+    "data": "<data>",
+    "status_code": "<Number: HTTP status code>",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
+}
+```
+
+## RequestFlagUser
+Request
+```json
+{
+  "authentication_token": "<jwt>",
+  "user_id"= "<userid>"
+}
+```
+
+Response: ConfirmFlagUser
+```json
+{
+    "data": "<data>",
+    "status_code": "<Number: HTTP status code>",
+    "message": "<String>",
+    "processing_time": "<Number: Processing time of the request in ms>",
+    "node_respondant": "<NodeID: ID of the node handling the request>"
+}
+```
+
