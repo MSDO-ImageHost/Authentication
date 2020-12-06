@@ -6,6 +6,8 @@ public class mySQL {
     private static Connection con;
     private static Statement stmt;
     private static final long DURATION = (1000 * 60 * 60 * 5);
+    private static final long BANNED_TIME = (1000 * 60 * 60 * 48); //Two days
+
 
     protected static void start(String URL,String User, String psw){
         try {
@@ -58,23 +60,31 @@ public class mySQL {
         }
     }
 
-    protected static String getRole(String userid){
+    protected static Integer getRole(String userid){
         try {
             String sql = String.format("SELECT role FROM authentication.users WHERE user_id = '%s'",userid);
             ResultSet rs = stmt.executeQuery(sql);
             rs.next();
-            return rs.getString("role"); //One or more input received
+            return rs.getInt("role"); //One or more input received
         } catch (SQLException throwables) {
             return null;
         }
     }
 
-    protected static String getBanned(String userid){
+    protected static Boolean isBanned(String userid){
         try {
-            String sql = String.format("SELECT banned FROM authentication.users WHERE user_id = '%s'",userid);
+            String sql = String.format("SELECT banned_until FROM authentication.users WHERE user_id = '%s'",userid);
             ResultSet rs = stmt.executeQuery(sql);
             rs.next();
-            return rs.getString("banned"); //One or more input received
+            Timestamp bannedUntil = rs.getTimestamp("banned_until"); //One or more input received
+            Timestamp now = new Timestamp(new java.util.Date().getTime());
+            if (bannedUntil == null) {
+                return false;
+            } else if (now.compareTo(bannedUntil) > 0)  {
+                return false;
+            } else {
+                return true;
+            }
         } catch (SQLException throwables) {
             return null;
         }
@@ -136,9 +146,9 @@ public class mySQL {
         }
     }
 
-    protected static boolean updateRole(String userid, String newRole) {
+    protected static boolean updateRole(String userid, int newRole) {
         try {
-            String sql = String.format("UPDATE authentication.users SET role='%s' WHERE user_id='%s'", newRole, userid);
+            String sql = String.format("UPDATE authentication.users SET role=%d WHERE user_id='%s'", newRole, userid);
             int i = stmt.executeUpdate(sql);
             return i == 1; //One password changed
         } catch (SQLException throwables) {
@@ -160,7 +170,8 @@ public class mySQL {
 
     protected static boolean banUser(String userid) {
         try {
-            String sql = String.format("UPDATE authentication.users SET banned='%d' WHERE user_id='%s'", 1, userid);
+            Timestamp banned_until = new Timestamp(new java.util.Date().getTime()+BANNED_TIME);
+            String sql = String.format("UPDATE authentication.users SET banned_until='%s' WHERE user_id='%s'", banned_until, userid);
             int i = stmt.executeUpdate(sql);
             return i == 1; //One password changed
         } catch (SQLException throwables) {
@@ -169,9 +180,9 @@ public class mySQL {
         }
     }
 
-    protected static String createUser(String user, String password, String email, String role){
+    protected static String createUser(String user, String password, String email, Integer role){
         try {
-            String sql = String.format("INSERT INTO authentication.users (username, email, password_hash, role) VALUES ('%s','%s','%s','%s')",user,email, password, role);
+            String sql = String.format("INSERT INTO authentication.users (username, email, password_hash, role) VALUES ('%s','%s','%s','%d')",user,email, password, role);
             int i = stmt.executeUpdate(sql);
             if (i == 1){
                 return receiveUser(user, password);

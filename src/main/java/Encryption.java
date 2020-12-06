@@ -16,7 +16,7 @@ public class Encryption {
     private static final Long TIMEACTIVE = 3600000L; //1 hour
 
 
-    public static String encodeJWT(String id, Long ttl, String role) {
+    public static String encodeJWT(String id, Long ttl, Integer role) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         if (ttl == null){
             ttl = TIMEACTIVE;
@@ -79,6 +79,9 @@ public class Encryption {
     }
 
     public static void main(String[] args) {
-        System.out.println(encodeJWT("5", 3600000L*24*365, "user" ));
+        long ttl = (1000 * 60 * 60 * 365);
+        System.out.println(encodeJWT("1", ttl, 20));
+        System.out.println(encodeJWT("1", ttl, 1));
+
     }
 }
