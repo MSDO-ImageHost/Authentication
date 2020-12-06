@@ -147,7 +147,8 @@ Request
 ```json
 {
   "authentication_token": "<jwt>",
-  "new-role": "<role>"
+  "new-role": "<role>",
+  "user_id": "<userid>"
 }
 ```
 
