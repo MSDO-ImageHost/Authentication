@@ -1,7 +1,48 @@
 # API Specification
 
+# Header
 
+Request
+```json
+{
+  "jwt":"<jwt token>"
+}
+```
 
+Response
+```json
+{
+  "status_code":<status code>, 
+  "status_message":"<status message>", 
+  "processing_time_ns": <processing time of the request in nano seconds>
+}
+```
+
+# Properties
+
+Request
+```json
+{
+  ContentType: application/json
+  CorrelationId: "<id>"
+  Headers: {"jwt":"<jwt token>"}
+}
+```
+
+Response
+```json
+{
+  ContentType: application/json
+  CorrelationId: "<id>"
+  Headers: {
+    "status_code":<status code>, 
+    "status_message":"<status message>", 
+    "processing_time_ns": <processing time of the request in nano seconds> 
+  }
+}
+```
+
+The below definitions are just the body of the different requests and respones
 
 ## RequestLoginToken
 
@@ -10,18 +51,14 @@ Request
 {
   "username": "<username>",
   "password": "<password>",
-  "ttl": "<time-in-millis>"
+  "ttl": <time-in-millis>
 }
 ```
 
 Response: ReturnAuthenticationToken
 ```json
 {
-    "data": "<jwt>",
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": "<jwt>"
 }
 ```
 
@@ -30,7 +67,7 @@ Response: ReturnAuthenticationToken
 Request
 ```json
 {
-  "authentication_token": "<jwt>"
+ 
   
 }
 ```
@@ -38,12 +75,7 @@ Request
 Response: ConfirmInvalidateToken
 ```json
 {
-    "invalidated_at": "<ISO8601 timestamp>",
-    "data": "<Object: requested data>",
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": "<Object: requested data>"
 }
 ```
 
@@ -65,11 +97,7 @@ Response: ConfirmAccountCreation
     "data": {
         "user-id": "<user-id>",
         "created_at": "<ISO8601 timestamp>"
-        },
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+        }
 }
 ```
 
@@ -78,7 +106,7 @@ Response: ConfirmAccountCreation
 Request
 ```json
 {
-  "authentication_token": "<jwt>", 
+
 }
 ```
 
@@ -88,11 +116,7 @@ Response: ConfirmAccountReset
     "data": {
         "reset_code": "<Integer/String>",
         "default-password": "<password>"
-        },
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+        }
 }
 ```
 Then the user should write the code sent to its email and that code is compared with the code from ConfirmAccountReset. It they are equal a RequestAccountPasswordUpdate is sent with the default as the old password and the new password is the one the user had written.  
@@ -102,7 +126,6 @@ Then the user should write the code sent to its email and that code is compared 
 Request
 ```json
 {
-  "authentication_token": "<jwt>",
   "old-password": "<password>",
   "new-password": "<password>"
 }
@@ -111,11 +134,7 @@ Request
 Response: ConfirmSetPassword
 ```json
 {
-    "data": "<Object: requested data>",
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": null
 }
 ```
 
@@ -124,19 +143,14 @@ Response: ConfirmSetPassword
 Request: RequestAccountDelete
 ```json
 {
-  "authentication_token": "<jwt>",
-  "user_id": "<userid>"
+  "username": "<username>"
 }
 ```
 
 Response
 ```json
 {
-   "data": "<Object: requested data>",
-   "status_code": "<Number: HTTP status code",
-   "message": "<String>",
-   "processing_time": "<Number: Processing time of the request in ms>",
-   "node_respondant": "<NodeID: ID of the node handling the request>"
+   "data": null
 }
 ```
 
@@ -146,20 +160,15 @@ Response
 Request
 ```json
 {
-  "authentication_token": "<jwt>",
   "new-role": "<role>",
-  "user_id": "<userid>"
+  "username": "<username>"
 }
 ```
 
 Response: ConfirmAccountUpdate
 ```json
 {
-    "data": "<Object: requested data>",
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": null
 }
 ```
 
@@ -168,7 +177,6 @@ Response: ConfirmAccountUpdate
 Request
 ```json
 {
-  "authentication_token": "<jwt>",
   "username": "<username>",
   "user-email": "<email>"
   
@@ -178,11 +186,7 @@ Request
 Response: ConfirmAccountUpdate
 ```json
 {
-    "data": "<Object: requested data>",
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": null
 }
 ```
 If one of the two options should not be changed the JSON request should contain the old info on that key e.g. if the username should not be changed the old username is sent in the JSON. 
@@ -192,7 +196,7 @@ If one of the two options should not be changed the JSON request should contain 
 Request
 ```json
 {
-  "authentication_token": "<jwt>"
+  "username": "<username>"
 }
 ```
 
@@ -206,11 +210,7 @@ Response: ReturnAccountInfo
         "last-login": "<ISO8601 timestamp>",
         "created_at": "<ISO8601 timestamp>",
         "updated_at": "<ISO8601 timestamp>"
-        },
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+        }
 }
 ```
 
@@ -218,19 +218,14 @@ Response: ReturnAccountInfo
 Request
 ```json
 {
-  "authentication_token": "<jwt>",
-  "user_id": "<userid>"
+  "username": "<username>"
 }
 ```
 
 Response: ConfirmBanUser
 ```json
 {
-    "data": "<data>",
-    "status_code": "<Number: HTTP status code>",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": null
 }
 ```
 
@@ -238,19 +233,14 @@ Response: ConfirmBanUser
 Request
 ```json
 {
-  "authentication_token": "<jwt>",
-  "user_id": "<userid>"
+  "username": "<username>"
 }
 ```
 
 Response: ConfirmFlagUser
 ```json
 {
-    "data": "<data>",
-    "status_code": "<Number: HTTP status code>",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "data": null
 }
 ```
 
