@@ -12,9 +12,9 @@ Request
 Response
 ```json
 {
-  "status_code":<status code>, 
-  "status_message":"<status message>", 
-  "processing_time_ns": <processing time of the request in nano seconds>
+  "status_code": "<status code>", 
+  "status_message": "<status message>", 
+  "processing_time_ns": "<processing time of the request in nano seconds>"
 }
 ```
 
@@ -23,21 +23,21 @@ Response
 Request
 ```json
 {
-  ContentType: application/json
-  CorrelationId: "<id>"
-  Headers: {"jwt":"<jwt token>"}
+  "ContentType": "application/json"
+  "CorrelationId": "<id>"
+  "Headers": {"jwt":"<jwt token>"}
 }
 ```
 
 Response
 ```json
 {
-  ContentType: application/json
-  CorrelationId: "<id>"
-  Headers: {
-    "status_code":<status code>, 
-    "status_message":"<status message>", 
-    "processing_time_ns": <processing time of the request in nano seconds> 
+  "ContentType": "application/json"
+  "CorrelationId": "<id>"
+  "Headers": {
+    "status_code": "<status code>", 
+    "status_message": "<status message>", 
+    "processing_time_ns": "<processing time of the request in nano seconds>" 
   }
 }
 ```
@@ -51,7 +51,7 @@ Request
 {
   "username": "<username>",
   "password": "<password>",
-  "ttl": <time-in-millis>
+  "ttl": "<time-in-millis>"
 }
 ```
 
