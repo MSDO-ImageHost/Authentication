@@ -85,7 +85,7 @@ Request
 ```json
 {
   "username": "<username>",
-  "user-email": "<email>",
+  "user_email": "<email>",
   "password": "<password>",
   "role": "<role>"
 }
@@ -115,7 +115,7 @@ Response: ConfirmAccountReset
 {
     "data": {
         "reset_code": "<Integer/String>",
-        "default-password": "<password>"
+        "default_password": "<password>"
         }
 }
 ```
@@ -126,8 +126,8 @@ Then the user should write the code sent to its email and that code is compared 
 Request
 ```json
 {
-  "old-password": "<password>",
-  "new-password": "<password>"
+  "old_password": "<password>",
+  "new_password": "<password>"
 }
 ```
 
@@ -160,7 +160,7 @@ Response
 Request
 ```json
 {
-  "new-role": "<role>",
+  "new_role": "<role>",
   "username": "<username>"
 }
 ```
@@ -178,7 +178,7 @@ Request
 ```json
 {
   "username": "<username>",
-  "user-email": "<email>"
+  "user_email": "<email>"
   
 }
 ```
@@ -205,9 +205,9 @@ Response: ReturnAccountInfo
 {
     "data": {
         "username": "<username>", 
-        "user-email": "<email>", 
+        "user_email": "<email>", 
         "role": "<role>",
-        "last-login": "<ISO8601 timestamp>",
+        "last_login": "<ISO8601 timestamp>",
         "created_at": "<ISO8601 timestamp>",
         "updated_at": "<ISO8601 timestamp>"
         }
@@ -218,7 +218,8 @@ Response: ReturnAccountInfo
 Request
 ```json
 {
-  "username": "<username>"
+  "username": "<username>",
+  "permanent": "<boolean>"
 }
 ```
 
@@ -244,3 +245,19 @@ Response: ConfirmFlagUser
 }
 ```
 
+## RequestAllFlagged
+Request
+```json
+{
+
+}
+```
+
+Response: ReturnAllFlagged
+```json
+{
+    "data": {
+        "users": ["<list of users>"]
+        }
+}
+```
