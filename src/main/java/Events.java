@@ -2,17 +2,17 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.json.simple.JSONObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 public class Events {
 
-    public static JSONObject CreateResponseJson(Object data, int statusCode, String message, int processingTime, String nodeRespondant ) {
+    public static JSONObject CreateResponseJson(Object data, int statusCode, String message) {
         JSONObject response = new JSONObject();
         response.put("data", data);
         response.put("status_code", statusCode);
         response.put("message", message);
-        response.put("processing_time", processingTime);
-        response.put("node_respondant", nodeRespondant);
         return response;
     }
 
@@ -32,18 +32,18 @@ public class Events {
             boolean success = mySQL.addlogin(user_id);
             if (success){
                 String jwt = Encryption.encodeJWT(user_id, ttl, role);
-                res = CreateResponseJson(jwt, 200, "token created", 23, "node-420");
+                res = CreateResponseJson(jwt, 200, "token created");
             } else {
-                res = CreateResponseJson(null, 400, "error accessing database", 23, "node-420");
+                res = CreateResponseJson(null, 400, "error accessing database");
             }
             return res;
         }
-        return CreateResponseJson(null, 400, "Wrong username or password or user is banned", 23, "node-420");
+        return CreateResponseJson(null, 400, "Wrong username or password or user is banned");
     }
 
     // /todo Maybe not needed
     public static JSONObject RequestInvalidateLoginToken(JSONObject req) throws Exception {
-        String jwt = (String) req.get("authentication_token");
+        String jwt = (String) req.get("authentication_token");//Skal ændres
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
@@ -56,17 +56,18 @@ public class Events {
             } else {
                 res = CreateResponseJson(null, 400, "could not invalidate token", 23, "node-420");
             }*/
-            res = CreateResponseJson(null, 400, "could not invalidate token", 23, "node-420");
+            res = CreateResponseJson(null, 400, "could not invalidate token");
             return res;
         } else {
-            res = CreateResponseJson(null, 400, "authentication token not valid", 23, "node-420");
+            res = CreateResponseJson(null, 400, "authentication token not valid");
             return res;
         }
     }
 
     public static JSONObject RequestAccountCreate(JSONObject req) throws Exception {
+        System.out.println("Inside account create");
         String userName = (String) req.get("username");
-        String userEmail = (String) req.get("user-email");
+        String userEmail = (String) req.get("user_email");
         String tempRole = (String) req.get("role");
         Integer role = Integer.parseInt(tempRole);
         String hash = Encryption.PassHash((String) req.get("password"));
@@ -74,36 +75,34 @@ public class Events {
         JSONObject res;
         if (userID != null){
             JSONObject userData = new JSONObject();
-            userData.put("user-id", userID);
+            userData.put("user_id", userID);
             java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
-            userData.put("created-at", now);
-            res = CreateResponseJson(userData, 200, "user created", 23, "node-420");
+            userData.put("created_at", now);
+            res = CreateResponseJson(userData, 200, "user created");
         } else {
-            res = CreateResponseJson(null, 400, "user not created", 23, "node-420");
+            res = CreateResponseJson(null, 400, "user not created");
         }
         return res;
     }
 
-    public static JSONObject RequestAccountPasswordUpdate(JSONObject req) throws Exception {
-        String jwt = (String) req.get("authentication_token");
+    public static JSONObject RequestAccountPasswordUpdate(JSONObject req, String jwt) throws Exception {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
-            String hash_new = Encryption.PassHash((String) req.get("old-password"));
-            String hash_old = Encryption.PassHash((String) req.get("new-password"));
+            String hash_new = Encryption.PassHash((String) req.get("old_password"));
+            String hash_old = Encryption.PassHash((String) req.get("new_password"));
             boolean success = mySQL.changePassword(verified.getSubject(), hash_new, hash_old);
             if (success){
-                res = CreateResponseJson(null, 200, "password updated", 23, "node-420");
+                res = CreateResponseJson(null, 200, "password updated");
             } else {
-                res = CreateResponseJson(null, 400, "could not update password", 23, "node-420");
+                res = CreateResponseJson(null, 400, "could not update password");
             }
             return res;
         }
-        return CreateResponseJson(null, 400, "authentication token not valid", 23, "node-420");
+        return CreateResponseJson(null, 400, "authentication token not valid");
     }
 
-    public static JSONObject RequestAccountDelete(JSONObject req) throws Exception {
-        String jwt = (String) req.get("authentication_token");
+    public static JSONObject RequestAccountDelete(JSONObject req, String jwt) throws Exception {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if(verified != null){
@@ -111,22 +110,23 @@ public class Events {
             if (role < 10) {
                 boolean success = mySQL.deleteUser(verified.getSubject());
                 if (success) {
-                    res = CreateResponseJson(null, 200, "account deleted", 23, "node-420");
+                    res = CreateResponseJson(null, 200, "user id: "+verified.getSubject()+" deleted");
                 } else {
-                    res = CreateResponseJson(null, 400, "could not delete account", 23, "node-420");
+                    res = CreateResponseJson(null, 400, "could not delete account");
                 }
             } else {
-                String idToDelete = (String) req.get("user_id");
-                boolean success = mySQL.deleteUser(idToDelete);
+                String userToDelete = (String) req.get("username");
+                String userId = mySQL.getId(userToDelete);
+                boolean success = mySQL.deleteUser(userId);
                 if (success) {
-                    res = CreateResponseJson(null, 200, "account deleted", 23, "node-420");
+                    res = CreateResponseJson(null, 200, "username: "+userToDelete+" deleted");
                 } else {
-                    res = CreateResponseJson(null, 400, "could not delete account", 23, "node-420");
+                    res = CreateResponseJson(null, 400, "could not delete account");
                 }
             }
             return res;
         }
-        return CreateResponseJson(null, 400, "authentication token not valid", 23, "node-420");
+        return CreateResponseJson(null, 400, "authentication token not valid");
     }
 
     // /todo should be worked on with gateway
@@ -142,120 +142,156 @@ public class Events {
                 JSONObject data = new JSONObject();
                 data.put("reset_code", resetCode);
                 data.put("default_password", defaultPassword);
-                res = CreateResponseJson(data, 200, "account reset", 23, "node-420");
+                res = CreateResponseJson(data, 200, "account reset");
             } else {
-                res = CreateResponseJson(null, 400, "account could not be reset", 23, "node-420");
+                res = CreateResponseJson(null, 400, "account could not be reset");
             }
             return res;
         }
-        return CreateResponseJson(null, 400, "authentication token not valid", 23, "node-420");
+        return CreateResponseJson(null, 400, "authentication token not valid");
     }
 
-    public static JSONObject UpdateAccount(JSONObject req) {
-        String jwt = (String) req.get("authentication_token");
+    public static JSONObject UpdateAccount(JSONObject req, String jwt) {
         String username = (String) req.get("username");
-        String email = (String) req.get("user-email");
+        String email = (String) req.get("user_email");
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
             boolean success = mySQL.updateAccount(verified.getSubject(), username, email);
             if (success){
-                res = CreateResponseJson(null, 200, "account updated", 23, "node-420");
+                res = CreateResponseJson(null, 200, "account updated");
             } else {
-                res = CreateResponseJson(null, 400, "account could not be updated", 23, "node-420");
+                res = CreateResponseJson(null, 400, "account could not be updated");
             }
             return res;
         } else {
-            res = CreateResponseJson(null, 400, "token not valid", 23, "node-420");
+            res = CreateResponseJson(null, 400, "token not valid");
         }
         return res;
     }
 
-    public static JSONObject UpdateAccountPrivileges(JSONObject req) {
-        String jwt = (String) req.get("authentication_token");
-        String tempRole = (String) req.get("new-role");
+    public static JSONObject UpdateAccountPrivileges(JSONObject req, String jwt) {
+        String tempRole = (String) req.get("new_role");
         int newRole = Integer.parseInt(tempRole);
-        String idOfUser = (String) req.get("user_id");
+        String nameOfUser = (String) req.get("username");
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null) {
             int role = verified.getClaim("role").asInt();
             if ( role > 19) {
+                String idOfUser = mySQL.getId(nameOfUser);
                 boolean success = mySQL.updateRole(idOfUser, newRole);
                 if (success) {
-                    res = CreateResponseJson(null, 200, "account updated", 23, "node-420");
+                    res = CreateResponseJson(null, 200, "account updated");
                 } else {
-                    res = CreateResponseJson(null, 400, "account could not be updated", 23, "node-420");
+                    res = CreateResponseJson(null, 400, "account could not be updated");
                 }
                 return res;
             }
         }
-        return CreateResponseJson(null, 400, "token not valid", 23, "node-420");
+        return CreateResponseJson(null, 400, "token not valid");
     }
 
-    public static JSONObject RequestAccountData(JSONObject req) {
-        String jwt = (String) req.get("authentication_token");
+    public static JSONObject RequestAccountData(JSONObject req, String jwt) {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
-            JSONObject data = mySQL.getUser(verified.getSubject());
-            if (data != null){
-                res = CreateResponseJson(data, 200, "account info returned", 23, "node-420");
+            int role = verified.getClaim("role").asInt();
+            JSONObject data;
+            if (role < 9){
+                data = mySQL.getUser(verified.getSubject());
             } else {
-                res = CreateResponseJson(null, 400, "account info could not be returned", 23, "node-420");
+                String userID = mySQL.getId((String) req.get("username"));
+                data = mySQL.getUser(userID);
+            }
+            if (data != null){
+                res = CreateResponseJson(data, 200, "account info returned");
+            } else {
+                res = CreateResponseJson(null, 400, "account info could not be returned");
             }
         } else {
-            res = CreateResponseJson(null, 400, "authentication token not valid", 23, "node-420");
+            res = CreateResponseJson(null, 400, "authentication token not valid");
         }
         return res;
 
     }
 
-    public static JSONObject RequestBanUser(JSONObject req){
-        String jwt = (String) req.get("authentication_token");
+    public static JSONObject RequestBanUser(JSONObject req, String jwt){
         DecodedJWT verified = Encryption.decodeJWT(jwt);
+        String permanent = String.valueOf(req.get("permanent"));
+        System.out.println("value of permanent: "+permanent);
         JSONObject res;
         if (verified != null){
             int role = verified.getClaim("role").asInt();
             if (role > 9) {
-                String idOfUser = (String) req.get("user_id");
-                boolean success = mySQL.banUser(idOfUser);
-                if (success) {
-                    res = CreateResponseJson(null, 200, "user was banned", 23, "node-420");
+                String nameOfUser = (String) req.get("username");
+                String idOfUser = mySQL.getId(nameOfUser);
+                System.out.println("idOfUser: "+idOfUser);
+                boolean success;
+                if (permanent.equals("true")){
+                    System.out.println("permanent is true");
+                    long permBanned = (1000 * 60 * 60 * 24 * 365L * 17L); //17 years
+                    success = mySQL.banUser(idOfUser, permBanned);
                 } else {
-                    res = CreateResponseJson(null, 400, "user could not be banned", 23, "node-420");
+                    long tempBanned = (1000 * 60 * 60 * 48); //Two days
+                    success = mySQL.banUser(idOfUser, tempBanned);
+                }
+                if (success) {
+                    res = CreateResponseJson(null, 200, "user "+nameOfUser+" was banned");
+                } else {
+                    res = CreateResponseJson(null, 400, "user "+nameOfUser+" could not be banned");
                 }
                 return res;
             }
         }
-        return CreateResponseJson(null, 400, "permission denied", 23, "node-420");
+        return CreateResponseJson(null, 400, "permission denied");
     }
 
-    public static JSONObject RequestFlagUser(JSONObject req){
-        String jwt = (String) req.get("authentication_token");
+    public static JSONObject RequestFlagUser(JSONObject req, String jwt){
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
             int role = verified.getClaim("role").asInt();
             if ( role > 9) {
-                String idOfUser = (String) req.get("user_id");
+                String nameOfUser = (String) req.get("username");
+                String idOfUser = mySQL.getId(nameOfUser);
                 boolean success = mySQL.flagUser(idOfUser);
                 if (success) {
-                    res = CreateResponseJson(null, 200, "user was flagged", 23, "node-420");
+                    res = CreateResponseJson(null, 200, "user was flagged");
                 } else {
-                    res = CreateResponseJson(null, 400, "user could not be flagged", 23, "node-420");
+                    res = CreateResponseJson(null, 400, "user could not be flagged");
                 }
                 return res;
             }
         }
-        return CreateResponseJson(null, 400, "permission denied", 23, "node-420");
+        return CreateResponseJson(null, 400, "permission denied");
+    }
+
+    public static JSONObject RequestAllFlagged(JSONObject req, String jwt){
+        DecodedJWT verified = Encryption.decodeJWT(jwt);
+        JSONObject res;
+        if (verified != null){
+            int role = verified.getClaim("role").asInt();
+            if ( role > 9) {
+                ArrayList<String> allUsers = mySQL.getAllFlagged();
+                if (allUsers != null) {
+                    JSONObject data = new JSONObject();
+                    data.put("users", allUsers);
+                    res = CreateResponseJson(data, 200, "returned all flagged users");
+                } else {
+                    res = CreateResponseJson(null, 400, "could not get flagged users");
+                }
+                return res;
+            }
+        }
+        return CreateResponseJson(null, 400, "permission denied");
     }
 
     public static void main(String[] args) throws Exception {
         mySQL.start("jdbc:mysql://localhost:3306/authentication","root","1234");
         JSONObject req = new JSONObject();
         req.put("username", "lsoer");
-        req.put("user-email", "lsoer@live.dk");
+        req.put("user_email", "lsoer@live.dk");
         req.put("password", "12345");
         req.put("role","20");
         System.out.println(RequestAccountCreate(req));
@@ -265,8 +301,8 @@ public class Events {
         JSONObject res = RequestLoginToken(login);
         JSONObject pass = new JSONObject();
         pass.put("authentication_token", res.get("data"));
-        pass.put("old-password", "12345");
-        pass.put("new-password", "anneersej");
+        pass.put("old_password", "12345");
+        pass.put("new_password", "anneersej");
         System.out.println(RequestAccountPasswordUpdate(pass));*/
 
     }

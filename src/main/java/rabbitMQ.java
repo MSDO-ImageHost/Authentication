@@ -1,4 +1,6 @@
 import com.rabbitmq.client.*;
+import org.json.simple.JSONObject;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -21,10 +23,31 @@ public class rabbitMQ {
         return channel;
     }
 
-    public static void send(String event, String body) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+    public static void send(String event, String body, AMQP.BasicProperties props) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         Channel channel = setupChannel();
-        channel.basicPublish(rabbitMQ.rapid, event,null, body.getBytes("UTF-8"));
+        channel.basicPublish(rabbitMQ.rapid, event, props, body.getBytes("UTF-8"));
         channel.close();
+    }
+
+    public static AMQP.BasicProperties makeProps(JSONObject body, String correlationID, String contentType){
+        Map<String, Object> header = new HashMap<>();
+        header.put("status_code", body.get("status_code"));
+        header.put("status_message", body.get("message"));
+        header.put("processing_time_ns", null);
+        AMQP.BasicProperties prop = new AMQP.BasicProperties()
+                .builder()
+                .correlationId(correlationID)
+                .contentType(contentType)
+                .headers(header)
+                .build();
+        return prop;
+    }
+
+    public static JSONObject makeSendBody(JSONObject body){
+        String data = String.valueOf(body.get("data"));
+        JSONObject sendBody = new JSONObject();
+        sendBody.put("data", data);
+        return sendBody;
     }
 
     //Bind a single event to one queue
@@ -44,7 +67,6 @@ public class rabbitMQ {
             } else {
                 func.handle(consumerTag, delivery);
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(),false);
-                System.out.println(consumerTag);
             }
             System.out.println(" [x] Received event " + delivery.getEnvelope().getRoutingKey());
         });

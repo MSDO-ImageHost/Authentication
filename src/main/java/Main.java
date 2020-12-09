@@ -1,11 +1,15 @@
+import com.rabbitmq.client.AMQP;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
@@ -21,35 +25,57 @@ public class Main {
             rabbitMQ.addSubscription("RequestLoginToken","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
                     JSONObject body = Events.RequestLoginToken(json);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
-                    rabbitMQ.send("ReturnAuthenticationToken", body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ReturnAuthenticationToken", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ReturnAuthenticationToken", body.toJSONString());
+                        rabbitMQ.send("ReturnAuthenticationToken", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
                 }
             });
             rabbitMQ.addSubscription("RequestAccountCreate","Authentication",(consumerTag, delivery) -> {
+                System.out.println("RequestAccountCreate");
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    System.out.println("Received account create");
                     JSONObject body = Events.RequestAccountCreate(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmAccountCreation", body.toJSONString());
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmAccountCreation", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountCreation", body.toJSONString());
+                        rabbitMQ.send("ConfirmAccountCreation", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -58,16 +84,27 @@ public class Main {
             rabbitMQ.addSubscription("RequestInvalidateLoginToken","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
                     JSONObject body = Events.RequestInvalidateLoginToken(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmInvalidateToken", body.toJSONString());
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmInvalidateToken", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmInvalidateToken", body.toJSONString());
+                        rabbitMQ.send("ConfirmInvalidateToken", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -76,16 +113,27 @@ public class Main {
             rabbitMQ.addSubscription("RequestAccountReset","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
                     JSONObject body = Events.ConfirmAccountReset(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmAccountReset", body.toJSONString());
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmAccountReset", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountReset", body.toJSONString());
+                        rabbitMQ.send("ConfirmAccountReset", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -94,16 +142,28 @@ public class Main {
             rabbitMQ.addSubscription("RequestAccountPasswordUpdate","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.RequestAccountPasswordUpdate(json);
+                    JSONObject body = Events.RequestAccountPasswordUpdate(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmSetPassword", body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmSetPassword", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmSetPassword", body.toJSONString());
+                        rabbitMQ.send("ConfirmSetPassword", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -112,16 +172,28 @@ public class Main {
             rabbitMQ.addSubscription("RequestAccountDelete","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.RequestAccountDelete(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmAccountDeletion", body.toJSONString());
+                    JSONObject body = Events.RequestAccountDelete(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmAccountDeletion", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountDeletion", body.toJSONString());
+                        rabbitMQ.send("ConfirmAccountDeletion", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -130,16 +202,28 @@ public class Main {
             rabbitMQ.addSubscription("UpdateAccountPrivileges","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.UpdateAccountPrivileges(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmAccountUpdate", body.toJSONString());
+                    JSONObject body = Events.UpdateAccountPrivileges(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountUpdate", body.toJSONString());
+                        rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -148,16 +232,28 @@ public class Main {
             rabbitMQ.addSubscription("RequestAccountData","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.RequestAccountData(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ReturnAccountInfo", body.toJSONString());
+                    JSONObject body = Events.RequestAccountData(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ReturnAccountInfo", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ReturnAccountInfo", body.toJSONString());
+                        rabbitMQ.send("ReturnAccountInfo", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -166,16 +262,28 @@ public class Main {
             rabbitMQ.addSubscription("UpdateAccount","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.UpdateAccount(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmAccountUpdate", body.toJSONString());
+                    JSONObject body = Events.UpdateAccount(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountUpdate", body.toJSONString());
+                        rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -184,16 +292,28 @@ public class Main {
             rabbitMQ.addSubscription("RequestBanUser","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.RequestBanUser(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmBanUser", body.toJSONString());
+                    JSONObject body = Events.RequestBanUser(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmBanUser", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmBanUser", body.toJSONString());
+                        rabbitMQ.send("ConfirmBanUser", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -202,17 +322,60 @@ public class Main {
             rabbitMQ.addSubscription("RequestFlagUser","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.RequestFlagUser(json);
-                    System.out.println(body.toJSONString());
-                    rabbitMQ.send("ConfirmFlagUser", body.toJSONString());
+                    JSONObject body = Events.RequestFlagUser(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    rabbitMQ.send("ConfirmFlagUser", sendBody.toJSONString(), prop);
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    JSONObject body = Events.CreateResponseJson(null, 400, e.getMessage(), 23, "node-420" );
-                    System.out.println(body.toJSONString());
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmFlagUser", body.toJSONString());
+                        rabbitMQ.send("ConfirmFlagUser", sendBody.toJSONString(), prop);
+                    } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
+                        timeoutException.printStackTrace();
+                    }
+                }
+            });
+            rabbitMQ.addSubscription("RequestAllFlagged","Authentication",(consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(),"UTF-8");
+                JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
+                try {
+                    System.out.println("beginning of try");
+                    JSONObject json = (JSONObject) parser.parse(message);
+                    JSONObject body = Events.RequestAllFlagged(json, token);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    System.out.println("right before send");
+                    rabbitMQ.send("ReturnAllFlagged", sendBody.toJSONString(), prop);
+                } catch (Exception e) {
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    try {
+                        rabbitMQ.send("ReturnAllFlagged", sendBody.toJSONString(), prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }

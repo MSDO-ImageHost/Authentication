@@ -1,12 +1,13 @@
 import org.json.simple.JSONObject;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class mySQL {
     private static Connection con;
     private static Statement stmt;
     private static final long DURATION = (1000 * 60 * 60 * 5);
-    private static final long BANNED_TIME = (1000 * 60 * 60 * 48); //Two days
+
 
 
     protected static void start(String URL,String User, String psw){
@@ -48,9 +49,9 @@ public class mySQL {
         }
     }
 
-    protected static JSONObject getUser(String userId){
+    protected static JSONObject getUser(String userid){
         try {
-            String sql = String.format("SELECT * FROM authentication.users WHERE user_id = '%s'",userId);
+            String sql = String.format("SELECT * FROM authentication.users WHERE user_id = '%s'",userid);
             ResultSet rs = stmt.executeQuery(sql);
             rs.next();
             JSONObject userData = createUserJSON(rs.getString("username"), rs.getString("email"), rs.getString("role"), rs.getString("last_changed"), rs.getString("created_at"), rs.getString("last_login"));
@@ -66,6 +67,17 @@ public class mySQL {
             ResultSet rs = stmt.executeQuery(sql);
             rs.next();
             return rs.getInt("role"); //One or more input received
+        } catch (SQLException throwables) {
+            return null;
+        }
+    }
+
+    protected static String getId(String username){
+        try {
+            String sql = String.format("SELECT user_id FROM authentication.users WHERE username = '%s'",username);
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            return rs.getString("user_id"); //One or more input received
         } catch (SQLException throwables) {
             return null;
         }
@@ -101,10 +113,24 @@ public class mySQL {
         }
     }
 
+    protected static ArrayList<String> getAllFlagged(){
+        try {
+            String sql = String.format("SELECT * FROM authentication.users WHERE flagged = 1");
+            ResultSet rs = stmt.executeQuery(sql);
+            ArrayList<String> flaggedUsers = new ArrayList<String>();
+            while (rs.next()){
+                flaggedUsers.add(rs.getString("username"));
+            }
+            return flaggedUsers; //One or more input received
+        } catch (SQLException throwables) {
+            return null;
+        }
+    }
+
     protected static JSONObject createUserJSON(String userName, String email, String role, String lastChanged, String createdAt, String lastLogin){
         JSONObject userData = new JSONObject();
         userData.put("username", userName);
-        userData.put("user-email", email);
+        userData.put("user_email", email);
         userData.put("role", role);
         userData.put("created_at", createdAt);
         userData.put("updated_at", lastChanged);
@@ -168,12 +194,12 @@ public class mySQL {
         }
     }
 
-    protected static boolean banUser(String userid) {
+    protected static boolean banUser(String userid, long timeBanned) {
         try {
-            Timestamp banned_until = new Timestamp(new java.util.Date().getTime()+BANNED_TIME);
+            Timestamp banned_until = new Timestamp(new java.util.Date().getTime()+timeBanned);
             String sql = String.format("UPDATE authentication.users SET banned_until='%s' WHERE user_id='%s'", banned_until, userid);
             int i = stmt.executeUpdate(sql);
-            return i == 1; //One password changed
+            return i == 1;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return false;
