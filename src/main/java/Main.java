@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) throws URISyntaxException, KeyManagementException, TimeoutException, NoSuchAlgorithmException, IOException {
         ping("rabbitmq");
         ping("mysql");
-        mySQL.start("jdbc:mysql://mysql:3306/","root", System.getenv("MYSQL_PASSWORD"));
+        mySQL.start(System.getenv("MYSQL_URI"),"root", System.getenv("MYSQL_ROOT_PASSWORD"));
         try {
             rabbitMQ.addSubscription("RequestLoginToken","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");

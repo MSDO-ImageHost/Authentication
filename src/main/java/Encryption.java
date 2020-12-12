@@ -80,8 +80,9 @@ public class Encryption {
 
     public static void main(String[] args) {
         long ttl = (1000 * 60 * 60 * 365);
-        System.out.println(encodeJWT("1", ttl, 20));
-        System.out.println(encodeJWT("1", ttl, 1));
+        //System.out.println(encodeJWT("1", ttl, 20));
+        //System.out.println(encodeJWT("1", ttl, 1));
+        System.out.println(decodeJWT("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6ImFkbWluIiwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsImV4cCI6MTYwNjkyODMwMywiaWF0IjoxNjA2OTI0NzAzfQ.TC5wpxA20V-zhorK0EVIQbjIZdPX2Uy-PLrw7mYIeng"));
 
     }
 }
