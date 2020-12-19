@@ -15,12 +15,12 @@ import java.util.concurrent.TimeoutException;
 
 public class Main {
 
-    private static String JWT = null;
-
     public static void main(String[] args) throws URISyntaxException, KeyManagementException, TimeoutException, NoSuchAlgorithmException, IOException {
         ping("rabbitmq");
         ping("mysql");
-        mySQL.start(System.getenv("MYSQL_URI"),"root", System.getenv("MYSQL_ROOT_PASSWORD"));
+        String mySQLURI = "jdbc:mysql://" + System.getenv("MYSQL_HOST") + ":" + System.getenv("MYSQL_PORT") + "/" + System.getenv("MYSQL_DB");
+        mySQL.start(mySQLURI,System.getenv("MYSQL_USER"), System.getenv("MYSQL_ROOT_PASSWORD"));
+        rabbitMQ.setupRabbit();
         try {
             rabbitMQ.addSubscription("RequestLoginToken","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
