@@ -32,7 +32,7 @@ public class rabbitMQ {
         return channel;
     }
 
-    public static void send(String event, String body, AMQP.BasicProperties props) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+    public static void send(String event, String body, AMQP.BasicProperties props) throws IOException, TimeoutException {
         Channel channel = setupChannel();
         channel.basicPublish(rabbitMQ.rapid, event, props, body.getBytes("UTF-8"));
         channel.close();
@@ -63,13 +63,13 @@ public class rabbitMQ {
     }
 
     //Bind a single event to one queue
-    private static void bindQueue(String event, String queue) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+    private static void bindQueue(String event, String queue) throws IOException {
         Channel channel = setupChannel();
         channel.queueDeclare(queue,false,false,false,null);
         channel.queueBind(queue,rabbitMQ.rapid,event);
     }
 
-    public static void setupReceiver(String queueName) throws TimeoutException, IOException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+    public static void setupReceiver(String queueName) throws IOException {
         Channel channel = setupChannel();
         DeliverCallback callback = ((consumerTag, delivery) -> {
             DeliverCallback func = events.get(delivery.getEnvelope().getRoutingKey());
@@ -85,7 +85,7 @@ public class rabbitMQ {
         channel.basicConsume(queueName,callback, consumerTag -> { });
     }
 
-    public static void addSubscription(String event,String queue, DeliverCallback func) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+    public static void addSubscription(String event,String queue, DeliverCallback func) throws IOException {
         rabbitMQ.bindQueue(event,queue);
         events.put(event,func);
     }

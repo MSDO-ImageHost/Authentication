@@ -16,7 +16,7 @@ public class Events {
         return response;
     }
 
-    public static JSONObject RequestLoginToken(JSONObject req) throws Exception {
+    public static JSONObject RequestLoginToken(JSONObject req) throws SQLException {
         String userName = (String) req.get("username");
         String password = (String) req.get("password");
         Long ttl = (Long) req.get("ttl");
@@ -42,7 +42,7 @@ public class Events {
     }
 
     // /todo Maybe not needed
-    public static JSONObject RequestInvalidateLoginToken(JSONObject req) throws Exception {
+    public static JSONObject RequestInvalidateLoginToken(JSONObject req) {
         String jwt = (String) req.get("authentication_token");//Skal ændres
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
@@ -64,7 +64,7 @@ public class Events {
         }
     }
 
-    public static JSONObject RequestAccountCreate(JSONObject req) throws Exception {
+    public static JSONObject RequestAccountCreate(JSONObject req) throws SQLException {
         String userName = (String) req.get("username");
         String userEmail = (String) req.get("user_email");
         int tempRole = ((Long) req.get("role")).intValue();
@@ -87,7 +87,7 @@ public class Events {
         return res;
     }
 
-    public static JSONObject RequestAccountPasswordUpdate(JSONObject req, String jwt) throws Exception {
+    public static JSONObject RequestAccountPasswordUpdate(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
@@ -104,7 +104,7 @@ public class Events {
         return CreateResponseJson(null, 400, "authentication token not valid");
     }
 
-    public static JSONObject RequestAccountDelete(JSONObject req, String jwt) throws Exception {
+    public static JSONObject RequestAccountDelete(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if(verified != null){
@@ -132,7 +132,7 @@ public class Events {
     }
 
     // /todo should be worked on with gateway
-    public static JSONObject ConfirmAccountReset(JSONObject req) throws Exception{
+    public static JSONObject ConfirmAccountReset(JSONObject req) throws SQLException {
         String jwt = (String) req.get("authentication_token");
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
@@ -153,7 +153,7 @@ public class Events {
         return CreateResponseJson(null, 400, "authentication token not valid");
     }
 
-    public static JSONObject UpdateAccount(JSONObject req, String jwt) {
+    public static JSONObject UpdateAccount(JSONObject req, String jwt) throws SQLException {
         String username = (String) req.get("username");
         String email = (String) req.get("user_email");
         DecodedJWT verified = Encryption.decodeJWT(jwt);
@@ -177,7 +177,7 @@ public class Events {
         return res;
     }
 
-    public static JSONObject UpdateAccountPrivileges(JSONObject req, String jwt) {
+    public static JSONObject UpdateAccountPrivileges(JSONObject req, String jwt) throws SQLException {
         String tempRole = (String) req.get("new_role");
         int newRole = Integer.parseInt(tempRole);
         String nameOfUser = (String) req.get("username");
@@ -199,7 +199,7 @@ public class Events {
         return CreateResponseJson(null, 400, "token not valid");
     }
 
-    public static JSONObject RequestAccountData(JSONObject req, String jwt) {
+    public static JSONObject RequestAccountData(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
@@ -223,7 +223,7 @@ public class Events {
 
     }
 
-    public static JSONObject RequestBanUser(JSONObject req, String jwt){
+    public static JSONObject RequestBanUser(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         String permanent = String.valueOf(req.get("permanent"));
         System.out.println("value of permanent: "+permanent);
@@ -254,7 +254,7 @@ public class Events {
         return CreateResponseJson(null, 400, "permission denied");
     }
 
-    public static JSONObject RequestFlagUser(JSONObject req, String jwt){
+    public static JSONObject RequestFlagUser(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
@@ -274,7 +274,7 @@ public class Events {
         return CreateResponseJson(null, 400, "permission denied");
     }
 
-    public static JSONObject RequestAllFlagged(JSONObject req, String jwt){
+    public static JSONObject RequestAllFlagged(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null){
