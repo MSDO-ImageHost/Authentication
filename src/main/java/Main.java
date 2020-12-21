@@ -33,7 +33,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ReturnAuthenticationToken", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ReturnAuthenticationToken", "", prop);
+                    } else {
+                        rabbitMQ.send("ReturnAuthenticationToken", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -43,9 +47,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ReturnAuthenticationToken", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ReturnAuthenticationToken", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -63,7 +67,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmAccountCreation", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmAccountCreation", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmAccountCreation", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -73,9 +81,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountCreation", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmAccountCreation", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -92,7 +100,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmInvalidateToken", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmInvalidateToken", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmInvalidateToken", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -102,9 +114,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmInvalidateToken", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmInvalidateToken", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -121,7 +133,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmAccountReset", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmAccountReset", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmAccountReset", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -131,9 +147,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountReset", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmAccountReset", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -151,7 +167,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmSetPassword", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmSetPassword", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmSetPassword", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -161,9 +181,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmSetPassword", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmSetPassword", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -181,7 +201,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmAccountDeletion", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmAccountDeletion", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmAccountDeletion", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -191,9 +215,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountDeletion", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmAccountDeletion", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -211,7 +235,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmAccountUpdate", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -221,9 +249,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmAccountUpdate", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -241,7 +269,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ReturnAccountInfo", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ReturnAccountInfo", "", prop);
+                    } else {
+                        rabbitMQ.send("ReturnAccountInfo", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -251,9 +283,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ReturnAccountInfo", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ReturnAccountInfo", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -271,7 +303,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmAccountUpdate", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -281,9 +317,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmAccountUpdate", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmAccountUpdate", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -301,7 +337,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmBanUser", sendBody.toJSONString(), prop);
+                    if (sendBody == null){
+                        rabbitMQ.send("ConfirmBanUser", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmBanUser", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -311,9 +351,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmBanUser", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmBanUser", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -331,7 +371,11 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    rabbitMQ.send("ConfirmFlagUser", sendBody.toJSONString(), prop);
+                    if(sendBody == null){
+                        rabbitMQ.send("ConfirmFlagUser", "", prop);
+                    } else {
+                        rabbitMQ.send("ConfirmFlagUser", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -341,9 +385,9 @@ public class Main {
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ConfirmFlagUser", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ConfirmFlagUser", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }
@@ -356,14 +400,16 @@ public class Main {
                 String contentType = delivery.getProperties().getContentType();
                 String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
-                    System.out.println("beginning of try");
                     JSONObject json = (JSONObject) parser.parse(message);
                     JSONObject body = Events.RequestAllFlagged(json, token);
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    System.out.println("right before send");
-                    rabbitMQ.send("ReturnAllFlagged", sendBody.toJSONString(), prop);
+                    if(sendBody == null){
+                        rabbitMQ.send("ReturnAllFlagged", "", prop);
+                    } else {
+                        rabbitMQ.send("ReturnAllFlagged", sendBody.toJSONString(), prop);
+                    }
                 } catch (Exception e) {
                     JSONObject body;
                     if (e.getMessage() == null) {
@@ -372,10 +418,10 @@ public class Main {
                         body = Events.CreateResponseJson(null, 400, e.getMessage());
                     }
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
-                    System.out.println(body.toJSONString());
-                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    //System.out.println(body.toJSONString());
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     try {
-                        rabbitMQ.send("ReturnAllFlagged", sendBody.toJSONString(), prop);
+                        rabbitMQ.send("ReturnAllFlagged", "", prop);
                     } catch (TimeoutException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException timeoutException) {
                         timeoutException.printStackTrace();
                     }

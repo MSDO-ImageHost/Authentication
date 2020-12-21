@@ -22,23 +22,23 @@ public class Events {
         Long ttl = (Long) req.get("ttl");
         String hash = Encryption.PassHash(password);
         String user_id = mySQL.receiveUser(userName,hash);
-        Integer role = mySQL.getRole(user_id);
-        Boolean banned = mySQL.isBanned(user_id);
-        JSONObject res;
-        if (banned == null || role == null){
-            throw new SQLException("SQL connection failed");
-        }
-        if (user_id != null && !banned){
-            boolean success = mySQL.addlogin(user_id);
-            if (success){
-                String jwt = Encryption.encodeJWT(user_id, ttl, role);
-                res = CreateResponseJson(jwt, 200, "token created");
-            } else {
-                res = CreateResponseJson(null, 400, "error accessing database");
+        if (user_id != null){
+            Integer role = mySQL.getRole(user_id);
+            Boolean banned = mySQL.isBanned(user_id);
+            if (!banned){
+                boolean success = mySQL.addlogin(user_id);
+                if (success){
+                    JSONObject userInfo = mySQL.getUser(user_id);
+                    String jwt = Encryption.encodeJWT(user_id, ttl, role);
+                    userInfo.put("jwt", jwt);
+                    return CreateResponseJson(userInfo, 200, "token created");
+                } else {
+                    return CreateResponseJson(null, 400, "error accessing database");
+                }
             }
-            return res;
+            return CreateResponseJson(null, 400, "User is banned");
         }
-        return CreateResponseJson(null, 400, "Wrong username or password or user is banned");
+        return CreateResponseJson(null, 400, "Wrong username or password");
     }
 
     // /todo Maybe not needed
@@ -65,7 +65,6 @@ public class Events {
     }
 
     public static JSONObject RequestAccountCreate(JSONObject req) throws Exception {
-        System.out.println("Inside account create");
         String userName = (String) req.get("username");
         String userEmail = (String) req.get("user_email");
         String tempRole = (String) req.get("role");
@@ -159,7 +158,12 @@ public class Events {
         if (verified != null){
             boolean success = mySQL.updateAccount(verified.getSubject(), username, email);
             if (success){
-                res = CreateResponseJson(null, 200, "account updated");
+                JSONObject userInfo = mySQL.getUser(verified.getSubject());
+                JSONObject resBody = new JSONObject();
+                resBody.put("username", userInfo.get("username"));
+                resBody.put("user_email", userInfo.get("user_email"));
+                resBody.put("updated_at", userInfo.get("updated_at"));
+                res = CreateResponseJson(resBody, 200, "account updated");
             } else {
                 res = CreateResponseJson(null, 400, "account could not be updated");
             }
