@@ -186,7 +186,11 @@ Request
 Response: ConfirmAccountUpdate
 ```json
 {
-    "data": null
+    "data": {
+              "username": "<username>",
+              "user_email": "<email>",
+              "updated_at": "<ISO8601 timestamp>"
+            }
 }
 ```
 If one of the two options should not be changed the JSON request should contain the old info on that key e.g. if the username should not be changed the old username is sent in the JSON. 
