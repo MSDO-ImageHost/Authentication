@@ -143,7 +143,7 @@ Response: ConfirmSetPassword
 Request: RequestAccountDelete
 ```json
 {
-  "username": "<username>"
+  "user_id": "<userid>"
 }
 ```
 
@@ -161,7 +161,7 @@ Request
 ```json
 {
   "new_role": "<role>",
-  "username": "<username>"
+  "user_id": "<user_id>"
 }
 ```
 
@@ -200,7 +200,7 @@ If one of the two options should not be changed the JSON request should contain 
 Request
 ```json
 {
-  "username": "<username>"
+  "user_id": "<userid>"
 }
 ```
 
@@ -222,7 +222,7 @@ Response: ReturnAccountInfo
 Request
 ```json
 {
-  "username": "<username>",
+  "user_id": "<userid>",
   "permanent": "<boolean>"
 }
 ```
@@ -238,7 +238,7 @@ Response: ConfirmBanUser
 Request
 ```json
 {
-  "username": "<username>"
+  "user_id": "<userid>"
 }
 ```
 
