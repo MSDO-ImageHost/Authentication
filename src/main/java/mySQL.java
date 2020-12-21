@@ -45,6 +45,7 @@ public class mySQL {
             rs.next();
             return rs.getString("user_id"); //One or more input received
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -57,6 +58,7 @@ public class mySQL {
             JSONObject userData = createUserJSON(rs.getString("username"), rs.getString("email"), rs.getString("role"), rs.getString("last_changed"), rs.getString("created_at"), rs.getString("last_login"));
             return userData; //One or more input received
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -68,6 +70,7 @@ public class mySQL {
             rs.next();
             return rs.getInt("role"); //One or more input received
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -79,6 +82,7 @@ public class mySQL {
             rs.next();
             return rs.getString("user_id"); //One or more input received
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -98,6 +102,7 @@ public class mySQL {
                 return true;
             }
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -109,6 +114,7 @@ public class mySQL {
             rs.next();
             return rs.getString("flagged"); //One or more input received
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -123,6 +129,7 @@ public class mySQL {
             }
             return flaggedUsers; //One or more input received
         } catch (SQLException throwables) {
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -145,7 +152,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i==1; //One password changed
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -156,7 +163,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i==1; //One password changed
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -167,7 +174,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i==1; //One password changed
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -178,7 +185,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i == 1; //One password changed
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -189,7 +196,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i == 1; //One password changed
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -201,7 +208,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i == 1;
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -216,7 +223,7 @@ public class mySQL {
                 return null;
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return null;
         }
     }
@@ -228,7 +235,7 @@ public class mySQL {
             int i = stmt.executeUpdate(sql);
             return i==1; //One user updated
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
@@ -239,7 +246,7 @@ public class mySQL {
             String sql = String.format("DELETE FROM authentication.users WHERE user_id='%s'",userid);
             return stmt.executeUpdate(sql) == 1;
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("Cause: "+throwables.getCause());
             return false;
         }
     }
