@@ -67,16 +67,19 @@ public class Events {
     public static JSONObject RequestAccountCreate(JSONObject req) throws Exception {
         String userName = (String) req.get("username");
         String userEmail = (String) req.get("user_email");
-        String tempRole = (String) req.get("role");
-        Integer role = Integer.parseInt(tempRole);
+        int tempRole = ((Long) req.get("role")).intValue();
+        System.out.println(tempRole);
         String hash = Encryption.PassHash((String) req.get("password"));
-        String userID = mySQL.createUser(userName,hash,userEmail, role);
+        String userID = mySQL.createUser(userName,hash,userEmail, tempRole);
         JSONObject res;
         if (userID != null){
             JSONObject userData = new JSONObject();
             userData.put("user_id", userID);
             java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
             userData.put("created_at", now);
+            userData.put("username", userName);
+            userData.put("user_email", userEmail);
+            userData.put("role", tempRole);
             res = CreateResponseJson(userData, 200, "user created");
         } else {
             res = CreateResponseJson(null, 400, "user not created");

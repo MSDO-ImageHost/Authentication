@@ -59,17 +59,23 @@ public class Main {
                 System.out.println("RequestAccountCreate");
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
+                System.out.println("1");
                 String correlationID = delivery.getProperties().getCorrelationId();
                 String contentType = delivery.getProperties().getContentType();
                 try {
+                    System.out.println("2");
                     JSONObject json = (JSONObject) parser.parse(message);
+                    System.out.println("2.5");
                     JSONObject body = Events.RequestAccountCreate(json);
+                    System.out.println("3");
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
                     if (sendBody == null){
+                        System.out.println("4");
                         rabbitMQ.send("ConfirmAccountCreation", "", prop);
                     } else {
+                        System.out.println("5");
                         rabbitMQ.send("ConfirmAccountCreation", sendBody.toJSONString(), prop);
                     }
                 } catch (Exception e) {
