@@ -76,7 +76,7 @@ public class Events {
             JSONObject userData = new JSONObject();
             userData.put("user_id", userID);
             java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
-            userData.put("created_at", now);
+            userData.put("created_at", now.toString());
             userData.put("username", userName);
             userData.put("user_email", userEmail);
             userData.put("role", tempRole);
