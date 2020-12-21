@@ -117,11 +117,10 @@ public class Events {
                     res = CreateResponseJson(null, 400, "could not delete account");
                 }
             } else {
-                String userToDelete = (String) req.get("username");
-                String userId = mySQL.getId(userToDelete);
-                boolean success = mySQL.deleteUser(userId);
+                String userIdToDelete = (String) req.get("user_id");
+                boolean success = mySQL.deleteUser(userIdToDelete);
                 if (success) {
-                    res = CreateResponseJson(null, 200, "username: "+userToDelete+" deleted");
+                    res = CreateResponseJson(null, 200, "username: "+userIdToDelete+" deleted");
                 } else {
                     res = CreateResponseJson(null, 400, "could not delete account");
                 }
@@ -180,13 +179,12 @@ public class Events {
     public static JSONObject UpdateAccountPrivileges(JSONObject req, String jwt) throws SQLException {
         String tempRole = (String) req.get("new_role");
         int newRole = Integer.parseInt(tempRole);
-        String nameOfUser = (String) req.get("username");
+        String idOfUser = (String) req.get("user_id");
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
         if (verified != null) {
             int role = verified.getClaim("role").asInt();
             if ( role > 19) {
-                String idOfUser = mySQL.getId(nameOfUser);
                 boolean success = mySQL.updateRole(idOfUser, newRole);
                 if (success) {
                     res = CreateResponseJson(null, 200, "account updated");
@@ -208,7 +206,7 @@ public class Events {
             if (role < 9){
                 data = mySQL.getUser(verified.getSubject());
             } else {
-                String userID = mySQL.getId((String) req.get("username"));
+                String userID = (String) req.get("user_id");
                 data = mySQL.getUser(userID);
             }
             if (data != null){
@@ -226,17 +224,13 @@ public class Events {
     public static JSONObject RequestBanUser(JSONObject req, String jwt) throws SQLException {
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         String permanent = String.valueOf(req.get("permanent"));
-        System.out.println("value of permanent: "+permanent);
         JSONObject res;
         if (verified != null){
             int role = verified.getClaim("role").asInt();
             if (role > 9) {
-                String nameOfUser = (String) req.get("username");
-                String idOfUser = mySQL.getId(nameOfUser);
-                System.out.println("idOfUser: "+idOfUser);
+                String idOfUser = (String) req.get("user_id");
                 boolean success;
                 if (permanent.equals("true")){
-                    System.out.println("permanent is true");
                     long permBanned = (1000 * 60 * 60 * 24 * 365L * 17L); //17 years
                     success = mySQL.banUser(idOfUser, permBanned);
                 } else {
@@ -244,9 +238,9 @@ public class Events {
                     success = mySQL.banUser(idOfUser, tempBanned);
                 }
                 if (success) {
-                    res = CreateResponseJson(null, 200, "user "+nameOfUser+" was banned");
+                    res = CreateResponseJson(null, 200, "user "+idOfUser+" was banned");
                 } else {
-                    res = CreateResponseJson(null, 400, "user "+nameOfUser+" could not be banned");
+                    res = CreateResponseJson(null, 400, "user "+idOfUser+" could not be banned");
                 }
                 return res;
             }
@@ -260,8 +254,7 @@ public class Events {
         if (verified != null){
             int role = verified.getClaim("role").asInt();
             if ( role > 9) {
-                String nameOfUser = (String) req.get("username");
-                String idOfUser = mySQL.getId(nameOfUser);
+                String idOfUser = (String) req.get("user_id");
                 boolean success = mySQL.flagUser(idOfUser);
                 if (success) {
                     res = CreateResponseJson(null, 200, "user was flagged");
@@ -294,23 +287,5 @@ public class Events {
         return CreateResponseJson(null, 400, "permission denied");
     }
 
-    public static void main(String[] args) throws Exception {
-        mySQL.start("jdbc:mysql://localhost:3306/authentication","root","1234");
-        JSONObject req = new JSONObject();
-        req.put("username", "lsoer");
-        req.put("user_email", "lsoer@live.dk");
-        req.put("password", "12345");
-        req.put("role","20");
-        System.out.println(RequestAccountCreate(req));
-        /*JSONObject login = new JSONObject();
-        login.put("username", "lsoer");
-        login.put("password", "12345");
-        JSONObject res = RequestLoginToken(login);
-        JSONObject pass = new JSONObject();
-        pass.put("authentication_token", res.get("data"));
-        pass.put("old_password", "12345");
-        pass.put("new_password", "anneersej");
-        System.out.println(RequestAccountPasswordUpdate(pass));*/
-
-    }
+    public static void main(String[] args) throws Exception {}
 }
