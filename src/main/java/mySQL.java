@@ -17,6 +17,7 @@ public class mySQL {
             stmt = con.createStatement();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            System.exit(-1);
         }
     }
 
