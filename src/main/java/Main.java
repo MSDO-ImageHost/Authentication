@@ -365,10 +365,9 @@ public class Main {
                 JSONParser parser = new JSONParser();
                 String correlationID = delivery.getProperties().getCorrelationId();
                 String contentType = delivery.getProperties().getContentType();
-                String token = String.valueOf(delivery.getProperties().getHeaders().get("jwt"));
                 try {
                     JSONObject json = (JSONObject) parser.parse(message);
-                    JSONObject body = Events.RequestAccountData(json, token);
+                    JSONObject body = Events.RequestAccountData(json);
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);

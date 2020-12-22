@@ -197,28 +197,16 @@ public class Events {
         return CreateResponseJson(null, 400, "token not valid");
     }
 
-    public static JSONObject RequestAccountData(JSONObject req, String jwt) throws SQLException {
-        DecodedJWT verified = Encryption.decodeJWT(jwt);
+    public static JSONObject RequestAccountData(JSONObject req) throws SQLException {
+        String userID = (String) req.get("user_id");
+        JSONObject data = mySQL.getUser(userID);
         JSONObject res;
-        if (verified != null){
-            int role = verified.getClaim("role").asInt();
-            JSONObject data;
-            if (role < 9){
-                data = mySQL.getUser(verified.getSubject());
-            } else {
-                String userID = (String) req.get("user_id");
-                data = mySQL.getUser(userID);
-            }
-            if (data != null){
-                res = CreateResponseJson(data, 200, "account info returned");
-            } else {
-                res = CreateResponseJson(null, 400, "account info could not be returned");
-            }
+        if (data != null){
+            res = CreateResponseJson(data, 200, "account info returned");
         } else {
-            res = CreateResponseJson(null, 400, "authentication token not valid");
+            res = CreateResponseJson(null, 400, "account info could not be returned");
         }
         return res;
-
     }
 
     public static JSONObject RequestBanUser(JSONObject req, String jwt) throws SQLException {
