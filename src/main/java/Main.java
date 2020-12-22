@@ -371,6 +371,8 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    System.out.println("sendbody for request account data: "+sendBody.toString());
+                    System.out.println(sendBody);
                     if (sendBody == null){
                         rabbitMQ.send("ReturnAccountInfo", "", prop);
                     } else {

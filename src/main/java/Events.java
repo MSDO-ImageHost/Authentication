@@ -200,8 +200,6 @@ public class Events {
     public static JSONObject RequestAccountData(JSONObject req) throws SQLException {
         String userID = (String) req.get("user_id");
         JSONObject data = mySQL.getUser(userID);
-        String username = mySQL.getName(userID);
-        data.put("username", username);
         JSONObject res;
         if (data != null){
             res = CreateResponseJson(data, 200, "account info returned");
