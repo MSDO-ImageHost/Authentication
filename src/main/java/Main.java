@@ -77,7 +77,6 @@ public class Main {
                 }
             });
             rabbitMQ.addSubscription("RequestAccountCreate","Authentication",(consumerTag, delivery) -> {
-                System.out.println("RequestAccountCreate");
                 String message = new String(delivery.getBody(),"UTF-8");
                 JSONParser parser = new JSONParser();
                 String correlationID = delivery.getProperties().getCorrelationId();
@@ -631,7 +630,6 @@ public class Main {
             });
             rabbitMQ.addSubscription("RequestUsername","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
-                System.out.println("message: "+message);
                 JSONParser parser = new JSONParser();
                 String correlationID = delivery.getProperties().getCorrelationId();
                 String contentType = delivery.getProperties().getContentType();
