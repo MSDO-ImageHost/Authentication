@@ -277,6 +277,6 @@ Request
 Response: ReturnAllFlagged
 ```json
 {
-    "data": "username": "<username>"
+    "data": {"username": "<username>"}
 }
 ```
