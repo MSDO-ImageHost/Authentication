@@ -68,7 +68,6 @@ public class Events {
         String userName = (String) req.get("username");
         String userEmail = (String) req.get("user_email");
         int tempRole = ((Long) req.get("role")).intValue();
-        System.out.println(tempRole);
         String hash = Encryption.PassHash((String) req.get("password"));
         String userID = mySQL.createUser(userName,hash,userEmail, tempRole);
         JSONObject res;
@@ -177,8 +176,7 @@ public class Events {
     }
 
     public static JSONObject UpdateAccountPrivileges(JSONObject req, String jwt) throws SQLException {
-        String tempRole = (String) req.get("new_role");
-        int newRole = Integer.parseInt(tempRole);
+        int newRole = ((Long) req.get("new_role")).intValue();
         String idOfUser = (String) req.get("user_id");
         DecodedJWT verified = Encryption.decodeJWT(jwt);
         JSONObject res;
