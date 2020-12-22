@@ -265,3 +265,18 @@ Response: ReturnAllFlagged
         }
 }
 ```
+
+## RequestUsername
+Request
+```json
+{
+  "user_id": "<userid>"
+}
+```
+
+Response: ReturnAllFlagged
+```json
+{
+    "data": "username": "<username>"
+}
+```
