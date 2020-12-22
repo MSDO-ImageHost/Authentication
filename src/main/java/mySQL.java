@@ -65,7 +65,7 @@ public class mySQL {
         String sql = String.format("SELECT username FROM authentication.users WHERE user_id = '%s'",userid);
         ResultSet rs = stmt.executeQuery(sql);
         rs.next();
-        return rs.getString("user_id"); //One or more input received
+        return rs.getString("username"); //One or more input received
     }
 
     protected static Boolean isBanned(String userid) throws SQLException {
