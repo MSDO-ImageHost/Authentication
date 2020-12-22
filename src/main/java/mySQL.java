@@ -61,8 +61,8 @@ public class mySQL {
         return rs.getInt("role"); //One or more input received
     }
 
-    protected static String getId(String username) throws SQLException {
-        String sql = String.format("SELECT user_id FROM authentication.users WHERE username = '%s'",username);
+    protected static String getName(String userid) throws SQLException {
+        String sql = String.format("SELECT username FROM authentication.users WHERE user_id = '%s'",userid);
         ResultSet rs = stmt.executeQuery(sql);
         rs.next();
         return rs.getString("user_id"); //One or more input received

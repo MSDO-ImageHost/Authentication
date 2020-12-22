@@ -190,6 +190,8 @@ public class Events {
                     res = CreateResponseJson(null, 400, "account could not be updated");
                 }
                 return res;
+            } else {
+                return CreateResponseJson(null, 400, "permission denied");
             }
         }
         return CreateResponseJson(null, 400, "token not valid");
@@ -283,6 +285,18 @@ public class Events {
             }
         }
         return CreateResponseJson(null, 400, "permission denied");
+    }
+
+    public static JSONObject RequestUsername(JSONObject req) throws SQLException {
+        String idOfUser = (String) req.get("user_id");
+        String username = mySQL.getName(idOfUser);
+        JSONObject res;
+        if (username != null){
+            res = CreateResponseJson(username, 200, "Username for user returned");
+        } else {
+            res = CreateResponseJson(null, 400, "Username could not be returned");
+        }
+        return res;
     }
 
     public static void main(String[] args) throws Exception {}

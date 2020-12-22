@@ -630,6 +630,59 @@ public class Main {
                     }
                 }
             });
+            rabbitMQ.addSubscription("RequestUsername","Authentication",(consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(),"UTF-8");
+                JSONParser parser = new JSONParser();
+                String correlationID = delivery.getProperties().getCorrelationId();
+                String contentType = delivery.getProperties().getContentType();
+                try {
+                    JSONObject json = (JSONObject) parser.parse(message);
+                    JSONObject body = Events.RequestUsername(json);
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    if (sendBody == null){
+                        rabbitMQ.send("ReturnUsername", "", prop);
+                    } else {
+                        rabbitMQ.send("ReturnUsername", sendBody.toJSONString(), prop);
+                    }
+                } catch (TimeoutException | ParseException e) {
+                    JSONObject body;
+                    if (e.getMessage() == null) {
+                        body = Events.CreateResponseJson(null, 400, "Malformed request syntax");
+                    } else {
+                        body = Events.CreateResponseJson(null, 400, e.getMessage());
+                    }
+                    AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                    //System.out.println(body.toJSONString());
+                    //JSONObject sendBody = rabbitMQ.makeSendBody(body);
+                    try {
+                        rabbitMQ.send("ReturnUsername", "", prop);
+                    } catch (TimeoutException timeoutException) {
+                        timeoutException.printStackTrace();
+                    }
+                } catch (SQLException throwables) {
+                    String sqlError = throwables.getSQLState();
+                    if (sqlError.equals("08S01") || sqlError.equals("S1009")){
+                        JSONObject body = Events.CreateResponseJson(null, 503, "SQL connection failed");
+                        AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                        try {
+                            rabbitMQ.send("ReturnUsername", "", prop);
+                        } catch (TimeoutException e) {
+                            e.printStackTrace();
+                        }
+                        System.exit(-1);
+                    } else {
+                        JSONObject body = Events.CreateResponseJson(null, 400, "Username could not be returned");
+                        AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
+                        try {
+                            rabbitMQ.send("ReturnUsername", "", prop);
+                        } catch (TimeoutException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
             rabbitMQ.setupReceiver("Authentication");
         } catch (IOException e) {
             e.printStackTrace();
