@@ -4,8 +4,6 @@ networks:
   public:
     driver: bridge
   rabbit-network:
-    external:
-      name: webgateway_rabbit-network
 
 volumes:
 #  rabbitmq_data:

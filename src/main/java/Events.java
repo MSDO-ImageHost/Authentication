@@ -278,6 +278,7 @@ public class Events {
     public static JSONObject RequestUsername(JSONObject req) throws SQLException {
         String idOfUser = (String) req.get("user_id");
         String username = mySQL.getName(idOfUser);
+        System.out.println("username: "+username);
         JSONObject res;
         if (username != null){
             res = CreateResponseJson(username, 200, "Username for user returned");

@@ -371,8 +371,6 @@ public class Main {
                     AMQP.BasicProperties prop = rabbitMQ.makeProps(body, correlationID, contentType);
                     //System.out.println(body.toJSONString());
                     JSONObject sendBody = rabbitMQ.makeSendBody(body);
-                    System.out.println("sendbody for request account data: "+sendBody.toString());
-                    System.out.println(sendBody);
                     if (sendBody == null){
                         rabbitMQ.send("ReturnAccountInfo", "", prop);
                     } else {
@@ -633,6 +631,7 @@ public class Main {
             });
             rabbitMQ.addSubscription("RequestUsername","Authentication",(consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(),"UTF-8");
+                System.out.println("message: "+message);
                 JSONParser parser = new JSONParser();
                 String correlationID = delivery.getProperties().getCorrelationId();
                 String contentType = delivery.getProperties().getContentType();
